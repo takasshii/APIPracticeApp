@@ -8,11 +8,21 @@ import android.view.ViewGroup
 import com.example.apipracticeapp.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    //bindingの解放
+    override fun onDestroyView() {
+        super.onDestroyView()
+        //bindingの解放
+        _binding = null
     }
 }
