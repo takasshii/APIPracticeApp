@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.navigation.fragment.findNavController
+import com.example.apipracticeapp.R
 import com.example.apipracticeapp.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
@@ -16,6 +19,15 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
+        binding.searchEditText.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_NULL) {
+                navigationResultFragment()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+
         return binding.root
     }
 
@@ -24,5 +36,9 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         //bindingの解放
         _binding = null
+    }
+
+    fun navigationResultFragment() {
+        findNavController().navigate(R.id.resultFragment)
     }
 }
