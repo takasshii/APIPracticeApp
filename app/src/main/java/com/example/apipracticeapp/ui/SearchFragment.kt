@@ -38,7 +38,7 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    fun navigationResultFragment() {
+    private fun navigationResultFragment() {
         findNavController().navigate(R.id.resultFragment)
     }
 }
