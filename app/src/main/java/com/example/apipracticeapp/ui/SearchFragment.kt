@@ -20,12 +20,8 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        binding.searchEditText.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_NULL) {
+        binding.reloadButton.setOnClickListener {
                 navigationResultFragment()
-                return@setOnEditorActionListener true
-            }
-            return@setOnEditorActionListener false
         }
 
         return binding.root
