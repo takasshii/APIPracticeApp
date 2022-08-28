@@ -26,17 +26,9 @@ class RankingFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        binding.searchEditText.setOnEditorActionListener { editText, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_NULL) {
-                editText.text.toString().let {
-                    // 入力された文字を代入
-                    viewModel.fetchAPI(it)
-                    Log.v("result", it)
-                }
-                navigationResultFragment()
-                return@setOnEditorActionListener true
-            }
-            return@setOnEditorActionListener false
+        binding.reloadButton.setOnClickListener {
+            viewModel.fetchAPI()
+            Log.v("result", it)
         }
         return binding.root
     }

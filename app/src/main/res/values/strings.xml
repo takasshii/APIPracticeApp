@@ -10,4 +10,6 @@
     <string name="writer_name">作者名</string>
     <string name="hint_text">リポジトリを検索</string>
     <string name="error_message">エラーが発生しました。やり直してください。</string>
+    <string name="title">スター数ランキング</string>
+    <string name="load">更新</string>
 </resources>
