@@ -18,7 +18,7 @@ class RankingViewModel @Inject constructor(
         get() = _uiState
 
     // APIを取得する関数
-    fun fetchAPI(inputText: String) {
+    fun fetchAPI() {
         _uiState.value = _uiState.value?.copy(proceeding = true)
 
         // API取得(APIResultで結果をラップ)

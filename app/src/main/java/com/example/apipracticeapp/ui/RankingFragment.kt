@@ -28,7 +28,6 @@ class RankingFragment : Fragment() {
 
         binding.reloadButton.setOnClickListener {
             viewModel.fetchAPI()
-            Log.v("result", it)
         }
         return binding.root
     }
