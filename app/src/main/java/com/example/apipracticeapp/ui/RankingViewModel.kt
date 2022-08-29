@@ -29,7 +29,7 @@ class RankingViewModel @Inject constructor(
             // ランキングを取得する
             // headerでjsonを指定, inputTextでランキングを指定
             val result = githubAPIRepository.getRepository(
-                header = "application/vnd.github.v3+json", inputText = "stars"
+                header = "application/vnd.github.v3+json", inputText = "stars:>1"
             )
 
             // レスポンスに応じてLiveDataに値を格納
@@ -52,7 +52,6 @@ class RankingViewModel @Inject constructor(
                     _uiState.value?.copy(events = newEvents ?: emptyList())
                 }
             }
-
             // ローディングを終了
             _uiState.value = _uiState.value?.copy(proceeding = false)
         }
