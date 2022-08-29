@@ -62,6 +62,8 @@ class RankingFragment : Fragment() {
             if (uiState.events.firstOrNull() != null) {
                 when (val event = uiState.events.firstOrNull()) {
                     is Event.Success -> {
+                        // 時間をセット
+                        binding.timeText.text = event.time
                         // リストに値をセット
                         // Itemに変更
                         uiState.repositories?.items?.forEach {
