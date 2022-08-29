@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.example.apipracticeapp.R
 import com.example.apipracticeapp.databinding.FragmentResultBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,10 +30,10 @@ class ResultFragment : Fragment() {
         binding.imageView.load(item.ownerIconUrl)
         binding.repositoryNameText.text = item.name
         binding.languageRightText.text = item.language
-        binding.starsRightText.text = "${item.stargazersCount} stars"
-        binding.watchersRightText.text = "${item.watchersCount} watchers"
-        binding.forkRightText.text = "${item.forksCount} forks"
-        binding.issueRightText.text = "${item.openIssuesCount} open issues"
+        binding.starsRightText.text = getString(R.string.star_number, item.stargazersCount)
+        binding.watchersRightText.text = getString(R.string.watchers_number, item.watchersCount)
+        binding.forkRightText.text = getString(R.string.forks_number, item.forksCount)
+        binding.issueRightText.text = getString(R.string.open_issue, item.openIssuesCount)
 
 
         return binding.root
