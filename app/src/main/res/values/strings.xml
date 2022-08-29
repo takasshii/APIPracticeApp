@@ -17,4 +17,8 @@
     <string name="error_dialog_positive_button">やり直す</string>
     <string name="error_dialog_negative_button">閉じる</string>
     <string name="ranking_title">ランキング一覧</string>
+    <string name="star_number">%1$d stars</string>
+    <string name="watchers_number">%1$d watchers</string>
+    <string name="forks_number">%1$d forks</string>
+    <string name="open_issue">%1$d open issues</string>
 </resources>
