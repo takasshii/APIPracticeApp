@@ -26,10 +26,10 @@ class CustomAdapter(
 ) : ListAdapter<Content, CustomAdapter.ViewHolder>(diff_util) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title = view.findViewById<TextView>(R.id.repository_title_text)
-        val stars = view.findViewById<TextView>(R.id.star_number_text)
-        val language = view.findViewById<TextView>(R.id.language_text)
-        val watchers = view.findViewById<TextView>(R.id.watchers_text)
+        val title: TextView = view.findViewById(R.id.repository_title_text)
+        val stars: TextView = view.findViewById(R.id.star_number_text)
+        val language: TextView = view.findViewById(R.id.language_text)
+        val watchers: TextView = view.findViewById(R.id.watchers_text)
     }
 
     interface OnItemClickListener {
@@ -51,7 +51,7 @@ class CustomAdapter(
         }
     }
 
-    fun setRepositoryName(holder: ViewHolder, item: Content) {
+    private fun setRepositoryName(holder: ViewHolder, item: Content) {
         holder.title.text = item.name
         holder.stars.text = item.stargazersCount.toString()
         holder.language.text = item.language
