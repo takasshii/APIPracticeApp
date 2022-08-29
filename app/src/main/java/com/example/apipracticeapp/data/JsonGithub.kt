@@ -1,7 +1,9 @@
 package com.example.apipracticeapp.data
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
 @JsonClass(generateAdapter = true)
 data class JsonGithub(
@@ -30,4 +32,16 @@ data class Owner(
     @Json(name = "avatar_url")
     val avatarUrl: String
 )
+
+// SafeArgs用
+@Parcelize
+data class Item(
+    val name: String,
+    val ownerIconUrl: String,
+    val language: String?,
+    val stargazersCount: Long,
+    val watchersCount: Long,
+    val forksCount: Long,
+    val openIssuesCount: Long,
+) : Parcelable
 

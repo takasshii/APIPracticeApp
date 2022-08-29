@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="@string/issue_number"
-                app:layout_constraintBottom_toTopOf="@id/writer_left_name"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/issue_right_text"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
@@ -151,29 +151,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/issue_left_text"
                 app:layout_constraintTop_toTopOf="@id/issue_left_text" />
-
-            <TextView
-                android:id="@+id/writer_left_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="@string/writer_name"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/writer_right_name"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/issue_left_text" />
-
-            <TextView
-                android:id="@+id/writer_right_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="@id/writer_left_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/writer_left_name"
-                app:layout_constraintTop_toTopOf="@id/writer_left_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

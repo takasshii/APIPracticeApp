@@ -10,24 +10,26 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.apipracticeapp.R
-import com.example.apipracticeapp.data.Content
-import com.example.apipracticeapp.databinding.FragmentSearchBinding
+import com.example.apipracticeapp.data.Item
+import com.example.apipracticeapp.databinding.FragmentRankingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RankingFragment : Fragment() {
-    private var _binding: FragmentSearchBinding? = null
+    private var _binding: FragmentRankingBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: RankingViewModel by viewModels()
+
+    // itemの格納
+    private val tempItems = mutableListOf<Item>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // bindingの結びつけ
-        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentRankingBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
@@ -39,8 +41,8 @@ class RankingFragment : Fragment() {
             DividerItemDecoration(requireContext(), layoutManager.orientation)
         // タップ処理を定義
         val adapter = CustomAdapter(object : CustomAdapter.OnItemClickListener {
-            override fun itemClick(item: Content) {
-                viewModel.nextPage()
+            override fun itemClick(item: Item) {
+                viewModel.nextPage(item)
             }
         })
         // recyclerViewにアダプターを結びつけ
@@ -60,8 +62,24 @@ class RankingFragment : Fragment() {
             if (uiState.events.firstOrNull() != null) {
                 when (val event = uiState.events.firstOrNull()) {
                     is Event.Success -> {
+                        // 時間をセット
+                        binding.timeText.text = event.time
                         // リストに値をセット
-                        adapter.submitList(uiState.repositories?.items)
+                        // Itemに変更
+                        uiState.repositories?.items?.forEach {
+                            tempItems.add(
+                                Item(
+                                    name = it.name,
+                                    ownerIconUrl = it.owner.avatarUrl,
+                                    language = it.language,
+                                    stargazersCount = it.stargazersCount,
+                                    watchersCount = it.watchersCount,
+                                    forksCount = it.forksCount,
+                                    openIssuesCount = it.openIssuesCount
+                                )
+                            )
+                        }
+                        adapter.submitList(tempItems)
                         // イベントを消費
                         viewModel.consumeEvent(event)
                     }
@@ -72,7 +90,7 @@ class RankingFragment : Fragment() {
                         viewModel.consumeEvent(event)
                     }
                     is Event.NextPage -> {
-                        navigationResultFragment()
+                        navigationResultFragment(event.item)
                         // イベントを消費
                         viewModel.consumeEvent(event)
                     }
@@ -101,7 +119,9 @@ class RankingFragment : Fragment() {
         dialog.show(childFragmentManager, "APIError")
     }
 
-    private fun navigationResultFragment() {
-        findNavController().navigate(R.id.resultFragment)
+    private fun navigationResultFragment(item: Item) {
+        val action = RankingFragmentDirections
+            .actionRankingFragmentToResultFragment(item)
+        findNavController().navigate(action)
     }
 }
