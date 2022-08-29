@@ -12,4 +12,8 @@
     <string name="error_message">エラーが発生しました。やり直してください。</string>
     <string name="title">スター数ランキング</string>
     <string name="load">更新</string>
+    <string name="error_dialog_title">エラーが発生しました</string>
+    <string name="error_dialog_message">インターネット接続を確認して、やり直してください。</string>
+    <string name="error_dialog_positive_button">やり直す</string>
+    <string name="error_dialog_negative_button">閉じる</string>
 </resources>

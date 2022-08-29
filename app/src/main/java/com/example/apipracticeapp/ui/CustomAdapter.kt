@@ -45,7 +45,7 @@ class CustomAdapter(
         val item = getItem(position)
         setRepositoryName(holder, item)
 
-        // ここでランキングに値をセット
+        // タップ処理を定義
         holder.itemView.setOnClickListener {
             itemClickListener.itemClick(item)
         }
