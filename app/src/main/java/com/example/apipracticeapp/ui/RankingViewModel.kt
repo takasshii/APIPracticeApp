@@ -1,12 +1,13 @@
 package com.example.apipracticeapp.ui
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.apipracticeapp.data.APIResult
 import com.example.apipracticeapp.data.GithubAPIRepository
 import com.example.apipracticeapp.data.Item
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,8 +36,13 @@ class RankingViewModel @Inject constructor(
             // レスポンスに応じてLiveDataに値を格納
             _uiState.value = when (result) {
                 is APIResult.Success -> {
+                    // 現在時刻の取得
+                    val dateFormat = SimpleDateFormat("MM月dd日 HH:mm:ss現在")
+                    val nowTime = Date(System.currentTimeMillis())
+                    val formatNowTime = dateFormat.format(nowTime)
+
                     // ViewModelイベント発行
-                    val newEvents = _uiState.value?.events?.plus(Event.Success)
+                    val newEvents = _uiState.value?.events?.plus(Event.Success(formatNowTime))
                     //　値をセット
                     _uiState.value?.copy(
                         events = newEvents ?: emptyList(),
