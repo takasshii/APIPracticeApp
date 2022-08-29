@@ -66,7 +66,8 @@ class RankingFragment : Fragment() {
                         viewModel.consumeEvent(event)
                     }
                     is Event.Error -> {
-                        // ここでダイアログの表示を行う（未実装）
+                        // ここでダイアログの表示を行う
+                        showNoticeDialog()
                         // イベントを消費
                         viewModel.consumeEvent(event)
                     }
@@ -89,6 +90,15 @@ class RankingFragment : Fragment() {
         super.onDestroyView()
         //bindingの解放
         _binding = null
+    }
+
+    private fun showNoticeDialog() {
+        val dialog = ErrorDialogFragment(object : ErrorDialogFragment.NoticeDialogListener {
+            override fun positiveClick() {
+                viewModel.fetchAPI()
+            }
+        })
+        dialog.show(childFragmentManager, "APIError")
     }
 
     private fun navigationResultFragment() {
