@@ -8,22 +8,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apipracticeapp.R
-import com.example.apipracticeapp.data.Content
+import com.example.apipracticeapp.data.Item
 
 // 変更された部分だけ更新する
-val diff_util = object : DiffUtil.ItemCallback<Content>() {
-    override fun areItemsTheSame(oldItem: Content, newItem: Content): Boolean {
+val diff_util = object : DiffUtil.ItemCallback<Item>() {
+    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem.name == newItem.name
     }
 
-    override fun areContentsTheSame(oldItem: Content, newItem: Content): Boolean {
+    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem == newItem
     }
 }
 
 class CustomAdapter(
     private val itemClickListener: OnItemClickListener
-) : ListAdapter<Content, CustomAdapter.ViewHolder>(diff_util) {
+) : ListAdapter<Item, CustomAdapter.ViewHolder>(diff_util) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.repository_title_text)
@@ -33,7 +33,7 @@ class CustomAdapter(
     }
 
     interface OnItemClickListener {
-        fun itemClick(item: Content)
+        fun itemClick(item: Item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -51,7 +51,7 @@ class CustomAdapter(
         }
     }
 
-    private fun setRepositoryName(holder: ViewHolder, item: Content) {
+    private fun setRepositoryName(holder: ViewHolder, item: Item) {
         holder.title.text = item.name
         holder.stars.text = item.stargazersCount.toString()
         holder.language.text = item.language
