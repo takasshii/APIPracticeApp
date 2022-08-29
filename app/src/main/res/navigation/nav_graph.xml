@@ -3,24 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/searchFragment">
+    app:startDestination="@id/rankingFragment">
 
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.apipracticeapp.ui.RankingFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
-        <action
-            android:id="@+id/action_searchFragment_to_resultFragment"
-            app:destination="@id/resultFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.example.apipracticeapp.ui.ResultFragment"
         android:label="fragment_result"
-        tools:layout="@layout/fragment_result" />
+        tools:layout="@layout/fragment_result" >
+        <argument
+            android:name="item"
+            app:argType="com.example.apipracticeapp.data.Item" />
+    </fragment>
+    <fragment
+        android:id="@+id/rankingFragment"
+        android:name="com.example.apipracticeapp.ui.RankingFragment"
+        android:label="RankingFragment" >
+        <action
+            android:id="@+id/action_rankingFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
 </navigation>
