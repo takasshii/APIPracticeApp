@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.apipracticeapp.data.APIResult
 import com.example.apipracticeapp.data.GithubAPIRepository
+import com.example.apipracticeapp.data.Item
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -64,8 +65,8 @@ class RankingViewModel @Inject constructor(
     }
 
     // 次のページに進むEventを発行する関数
-    fun nextPage() {
-        val newEvents = _uiState.value?.events?.plus(Event.NextPage)
+    fun nextPage(item: Item) {
+        val newEvents = _uiState.value?.events?.plus(Event.NextPage(item))
         _uiState.value = _uiState.value?.copy(events = newEvents ?: emptyList())
     }
 }
