@@ -29,7 +29,6 @@ class CustomAdapter(
         val title: TextView = view.findViewById(R.id.repository_title_text)
         val stars: TextView = view.findViewById(R.id.star_number_text)
         val language: TextView = view.findViewById(R.id.language_text)
-        val watchers: TextView = view.findViewById(R.id.watchers_text)
     }
 
     interface OnItemClickListener {
@@ -53,8 +52,7 @@ class CustomAdapter(
 
     private fun setRepositoryName(holder: ViewHolder, item: Item) {
         holder.title.text = item.name
-        holder.stars.text = item.stargazersCount.toString()
+        holder.stars.text = "${item.stargazersCount}stars"
         holder.language.text = item.language
-        holder.watchers.text = item.watchersCount.toString()
     }
 }
