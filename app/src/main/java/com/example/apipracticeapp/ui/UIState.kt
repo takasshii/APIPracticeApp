@@ -2,6 +2,7 @@ package com.example.apipracticeapp.ui
 
 import com.example.apipracticeapp.data.Item
 import com.example.apipracticeapp.data.JsonGithub
+import java.util.*
 
 data class UiState(
     val repositories: JsonGithub?,
@@ -10,7 +11,7 @@ data class UiState(
 )
 
 sealed interface Event {
-    object Success : Event
+    data class Success(val time: String) : Event
     data class Error(val message: String) : Event
     data class NextPage(val item: Item): Event
 }
