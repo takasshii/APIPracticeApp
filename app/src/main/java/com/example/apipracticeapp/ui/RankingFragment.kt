@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.apipracticeapp.R
+import com.example.apipracticeapp.data.Content
 import com.example.apipracticeapp.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,6 +32,25 @@ class RankingFragment : Fragment() {
         binding.reloadButton.setOnClickListener {
             viewModel.fetchAPI()
         }
+
+        // リストの管理
+        // リストに区切り線を入れる
+        val layoutManager = LinearLayoutManager(requireContext())
+        val dividerItemDecoration =
+            DividerItemDecoration(requireContext(), layoutManager.orientation)
+        // タップ処理を定義
+        val adapter = CustomAdapter(object : CustomAdapter.OnItemClickListener {
+            override fun itemClick(item: Content) {
+                navigationResultFragment()
+            }
+        })
+        // recyclerViewにアダプターを結びつけ
+        binding.recyclerView.also {
+            it.layoutManager = layoutManager
+            it.addItemDecoration(dividerItemDecoration)
+            it.adapter = adapter
+        }
+
         return binding.root
     }
 
