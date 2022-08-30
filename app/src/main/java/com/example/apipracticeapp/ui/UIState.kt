@@ -5,7 +5,7 @@ import com.example.apipracticeapp.data.JsonGithub
 import java.util.*
 
 data class UiState(
-    val repositories: JsonGithub?,
+    val repositories: List<Item>?,
     val events: List<Event> = emptyList(),
     val proceeding: Boolean
 )
