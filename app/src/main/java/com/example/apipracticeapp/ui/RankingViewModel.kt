@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.apipracticeapp.data.APIResult
 import com.example.apipracticeapp.data.GithubAPIRepository
 import com.example.apipracticeapp.data.Item
+import com.example.apipracticeapp.data.JsonGithub
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -15,8 +16,7 @@ class RankingViewModel @Inject constructor(
     private val githubAPIRepository: GithubAPIRepository
 ) : ViewModel() {
     // 状態変数を管理するLiveData
-    private val _uiState =
-        MutableLiveData(UiState(repositories = null, proceeding = false))
+    private val _uiState = MutableLiveData(UiState(repositories = null, proceeding = false, time = null))
     val uiState: LiveData<UiState>
         get() = _uiState
 
@@ -42,11 +42,16 @@ class RankingViewModel @Inject constructor(
                     val formatNowTime = dateFormat.format(nowTime)
 
                     // ViewModelイベント発行
-                    val newEvents = _uiState.value?.events?.plus(Event.Success(formatNowTime))
+                    val newEvents = _uiState.value?.events?.plus(Event.Success)
+
+                    // Item型に変換
+                    val itemList = convertToItem(result.data)
+
                     //　値をセット
                     _uiState.value?.copy(
                         events = newEvents ?: emptyList(),
-                        repositories = result.data
+                        repositories = itemList,
+                        time = formatNowTime
                     )
                 }
                 // エラーが生じていた場合 -> エラーダイアログを表示
@@ -61,6 +66,27 @@ class RankingViewModel @Inject constructor(
             // ローディングを終了
             _uiState.value = _uiState.value?.copy(proceeding = false)
         }
+    }
+
+    // JsonGithubからList<Item>に変換する処理
+    private fun convertToItem(data: JsonGithub?): List<Item> {
+        // itemの格納
+        val tempItems = mutableListOf<Item>()
+        // Itemに変更
+        data?.items?.forEach {
+            tempItems.add(
+                Item(
+                    name = it.name,
+                    ownerIconUrl = it.owner.avatarUrl,
+                    language = it.language,
+                    stargazersCount = it.stargazersCount,
+                    watchersCount = it.watchersCount,
+                    forksCount = it.forksCount,
+                    openIssuesCount = it.openIssuesCount
+                )
+            )
+        }
+        return tempItems
     }
 
     // イベントを消費する関数
