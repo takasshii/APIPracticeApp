@@ -60,11 +60,13 @@ class RankingFragment : Fragment() {
                 // リストに値をセット
                 adapter.submitList(uiState.repositories)
             }
+            if(uiState.time != null) {
+                // 時間をセット
+                binding.timeText.text = uiState.time
+            }
             if (uiState.events.firstOrNull() != null) {
                 when (val event = uiState.events.firstOrNull()) {
                     is Event.Success -> {
-                        // 時間をセット
-                        binding.timeText.text = event.time
                         // イベントを消費
                         viewModel.consumeEvent(event)
                     }
