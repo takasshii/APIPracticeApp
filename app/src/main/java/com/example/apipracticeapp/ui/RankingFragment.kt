@@ -21,9 +21,6 @@ class RankingFragment : Fragment() {
 
     private val viewModel: RankingViewModel by viewModels()
 
-    // itemの格納
-    private val tempItems = mutableListOf<Item>()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,27 +56,15 @@ class RankingFragment : Fragment() {
 
         // LiveDataを監視
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            if(uiState.repositories != null) {
+                // リストに値をセット
+                adapter.submitList(uiState.repositories)
+            }
             if (uiState.events.firstOrNull() != null) {
                 when (val event = uiState.events.firstOrNull()) {
                     is Event.Success -> {
                         // 時間をセット
                         binding.timeText.text = event.time
-                        // リストに値をセット
-                        // Itemに変更
-                        uiState.repositories?.items?.forEach {
-                            tempItems.add(
-                                Item(
-                                    name = it.name,
-                                    ownerIconUrl = it.owner.avatarUrl,
-                                    language = it.language,
-                                    stargazersCount = it.stargazersCount,
-                                    watchersCount = it.watchersCount,
-                                    forksCount = it.forksCount,
-                                    openIssuesCount = it.openIssuesCount
-                                )
-                            )
-                        }
-                        adapter.submitList(tempItems)
                         // イベントを消費
                         viewModel.consumeEvent(event)
                     }
