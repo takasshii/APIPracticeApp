@@ -16,8 +16,7 @@ class RankingViewModel @Inject constructor(
     private val githubAPIRepository: GithubAPIRepository
 ) : ViewModel() {
     // 状態変数を管理するLiveData
-    private val _uiState =
-        MutableLiveData(UiState(repositories = null, proceeding = false))
+    private val _uiState = MutableLiveData(UiState(repositories = null, proceeding = false, time = null))
     val uiState: LiveData<UiState>
         get() = _uiState
 
@@ -43,7 +42,7 @@ class RankingViewModel @Inject constructor(
                     val formatNowTime = dateFormat.format(nowTime)
 
                     // ViewModelイベント発行
-                    val newEvents = _uiState.value?.events?.plus(Event.Success(formatNowTime))
+                    val newEvents = _uiState.value?.events?.plus(Event.Success)
 
                     // Item型に変換
                     val itemList = convertToItem(result.data)
@@ -51,7 +50,8 @@ class RankingViewModel @Inject constructor(
                     //　値をセット
                     _uiState.value?.copy(
                         events = newEvents ?: emptyList(),
-                        repositories = itemList
+                        repositories = itemList,
+                        time = formatNowTime
                     )
                 }
                 // エラーが生じていた場合 -> エラーダイアログを表示
