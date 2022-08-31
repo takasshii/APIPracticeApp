@@ -20,14 +20,12 @@ class RankingViewModel @Inject constructor(
     val uiState: LiveData<UiState>
         get() = _uiState
 
-    private var _filteredRankingList = MutableLiveData<MutableList<Item>>(mutableListOf())
-    val filteredRankingList: LiveData<MutableList<Item>>
-        get() = _filteredRankingList
-
     // APIを取得する関数
     fun fetchAPI() {
         // ローディング開始
         _uiState.value = _uiState.value?.copy(proceeding = true)
+        // 検索終了
+        _uiState.value = _uiState.value?.copy(isSearch = false)
 
         // API取得(APIResultで結果をラップ)
         viewModelScope.launch {
@@ -106,20 +104,20 @@ class RankingViewModel @Inject constructor(
     }
 
     // ランキングにフィルタをかける関数
-    fun filteringRankingList(text: String): MutableList<Item> {
+    fun filteringRankingList(text: String) {
+        // 検索開始
+        _uiState.value = _uiState.value?.copy(isSearch = true)
         val list = _uiState.value?.repositories
         val filteredList = mutableListOf<Item>()
         if (list != null) {
-            for(item in list) {
+            for (item in list) {
                 // itemのnameの中に検索ワードが含まれていればListに追加
-                if(item.name.contains(text)) {
+                if (item.name.contains(text)) {
                     filteredList.add(item)
                 }
             }
         }
-        // LiveDataを更新
-        _filteredRankingList.postValue(filteredList)
-        return filteredList
+        // 値をセット
+        _uiState.value = _uiState.value?.copy(filteredRankingList = filteredList)
     }
-
 }
