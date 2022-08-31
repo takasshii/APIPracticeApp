@@ -21,4 +21,5 @@
     <string name="watchers_number">%1$d watchers</string>
     <string name="forks_number">%1$d forks</string>
     <string name="open_issue">%1$d open issues</string>
+    <string name="search_input_text_hint">検索</string>
 </resources>

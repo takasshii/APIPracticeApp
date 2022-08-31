@@ -1,11 +1,16 @@
 package com.example.apipracticeapp.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,7 +20,7 @@ import com.example.apipracticeapp.databinding.FragmentRankingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RankingFragment : Fragment() {
+class RankingFragment : Fragment(), TextWatcher {
     private var _binding: FragmentRankingBinding? = null
     private val binding get() = _binding!!
 
@@ -30,6 +35,8 @@ class RankingFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        // searchTextの監視．EditTextをリアルタイムで処理
+        binding.searchInputText.addTextChangedListener(this)
 
         // リストの管理
         // リストに区切り線を入れる
@@ -56,13 +63,17 @@ class RankingFragment : Fragment() {
 
         // LiveDataを監視
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            if(uiState.repositories != null) {
+            // 検索中
+            if (uiState.isSearch) {
+                adapter.submitList(uiState.filteredRankingList)
+            } else if (uiState.repositories != null) {
                 // リストに値をセット
                 adapter.submitList(uiState.repositories)
-            }
-            if(uiState.time != null) {
-                // 時間をセット
-                binding.timeText.text = uiState.time
+
+                if (uiState.time != null) {
+                    // 時間をセット
+                    binding.timeText.text = uiState.time
+                }
             }
             if (uiState.events.firstOrNull() != null) {
                 when (val event = uiState.events.firstOrNull()) {
@@ -87,6 +98,18 @@ class RankingFragment : Fragment() {
                 }
             }
         }
+
+        binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
+            if (action == EditorInfo.IME_ACTION_SEARCH) {
+                // EditTextのワードを含むItemでListを再生成
+                viewModel.filteringRankingList(editText.text.toString())
+                // 検索後にキーボードを隠す
+                val inputManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputManager.hideSoftInputFromWindow(view?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
         return binding.root
     }
 
@@ -110,5 +133,19 @@ class RankingFragment : Fragment() {
         val action = RankingFragmentDirections
             .actionRankingFragmentToResultFragment(item)
         findNavController().navigate(action)
+    }
+
+    // EditTextのWatcher用の関数
+    override fun afterTextChanged(p0: Editable?) {
+
+    }
+
+    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+    }
+
+    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        // EditTextのワードを含むItemでListを再生成
+        viewModel.filteringRankingList(p0.toString())
     }
 }
