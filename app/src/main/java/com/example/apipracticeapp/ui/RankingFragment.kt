@@ -1,11 +1,14 @@
 package com.example.apipracticeapp.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -86,6 +89,19 @@ class RankingFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
+            if (action == EditorInfo.IME_ACTION_SEARCH) {
+                // EditTextのワードを含むItemを返す
+                val filteredList = viewModel.filteringRankingList(editText.text.toString())
+                adapter.submitList(filteredList)
+                // 検索後にキーボードを隠す
+                val inputManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputManager.hideSoftInputFromWindow(view?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
         return binding.root
     }

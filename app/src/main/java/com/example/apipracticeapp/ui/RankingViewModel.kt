@@ -100,4 +100,19 @@ class RankingViewModel @Inject constructor(
         val newEvents = _uiState.value?.events?.plus(Event.NextPage(item))
         _uiState.value = _uiState.value?.copy(events = newEvents ?: emptyList())
     }
+
+    // ランキングにフィルタをかける関数
+    fun filteringRankingList(text: String): MutableList<Item> {
+        val list = _uiState.value?.repositories
+        val filteredList = mutableListOf<Item>()
+        if (list != null) {
+            for(item in list) {
+                // itemのnameの中に検索ワードが含まれていればListに追加
+                if(item.name.contains(text)) {
+                    filteredList.add(item)
+                }
+            }
+        }
+        return filteredList
+    }
 }
