@@ -2,6 +2,8 @@ package com.example.apipracticeapp.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,7 +20,7 @@ import com.example.apipracticeapp.databinding.FragmentRankingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RankingFragment : Fragment() {
+class RankingFragment : Fragment(), TextWatcher {
     private var _binding: FragmentRankingBinding? = null
     private val binding get() = _binding!!
 
@@ -33,6 +35,8 @@ class RankingFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        // searchTextの監視
+        binding.searchInputText.addTextChangedListener(this)
 
         // リストの管理
         // リストに区切り線を入れる
@@ -61,6 +65,7 @@ class RankingFragment : Fragment() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             if(uiState.repositories != null) {
                 // リストに値をセット
+                Log.d("test", "calledRepositoty")
                 adapter.submitList(uiState.repositories)
             }
             if(uiState.time != null) {
@@ -89,6 +94,10 @@ class RankingFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        viewModel.filteredRankingList.observe(viewLifecycleOwner) { filteredList ->
+            adapter.submitList(filteredList)
         }
 
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
@@ -126,5 +135,19 @@ class RankingFragment : Fragment() {
         val action = RankingFragmentDirections
             .actionRankingFragmentToResultFragment(item)
         findNavController().navigate(action)
+    }
+
+    override fun afterTextChanged(p0: Editable?) {
+
+    }
+
+    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+    }
+
+    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        Log.d("test", "onTextChanged")
+        // EditTextのワードを含むItemを返す
+        viewModel.filteringRankingList(p0.toString())
     }
 }

@@ -20,6 +20,10 @@ class RankingViewModel @Inject constructor(
     val uiState: LiveData<UiState>
         get() = _uiState
 
+    private var _filteredRankingList = MutableLiveData<MutableList<Item>>(mutableListOf())
+    val filteredRankingList: LiveData<MutableList<Item>>
+        get() = _filteredRankingList
+
     // APIを取得する関数
     fun fetchAPI() {
         // ローディング開始
@@ -113,6 +117,8 @@ class RankingViewModel @Inject constructor(
                 }
             }
         }
+        _filteredRankingList.postValue(filteredList)
         return filteredList
     }
+
 }
