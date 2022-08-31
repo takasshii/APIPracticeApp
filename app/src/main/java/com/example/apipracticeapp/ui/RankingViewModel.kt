@@ -117,6 +117,7 @@ class RankingViewModel @Inject constructor(
                 }
             }
         }
+        // LiveDataを更新
         _filteredRankingList.postValue(filteredList)
         return filteredList
     }

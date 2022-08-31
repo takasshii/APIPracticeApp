@@ -35,7 +35,7 @@ class RankingFragment : Fragment(), TextWatcher {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        // searchTextの監視
+        // searchTextの監視．EditTextをリアルタイムで処理
         binding.searchInputText.addTextChangedListener(this)
 
         // リストの管理
@@ -65,7 +65,6 @@ class RankingFragment : Fragment(), TextWatcher {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             if(uiState.repositories != null) {
                 // リストに値をセット
-                Log.d("test", "calledRepositoty")
                 adapter.submitList(uiState.repositories)
             }
             if(uiState.time != null) {
@@ -102,7 +101,7 @@ class RankingFragment : Fragment(), TextWatcher {
 
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
-                // EditTextのワードを含むItemを返す
+                // EditTextのワードを含むItemでListを再生成
                 val filteredList = viewModel.filteringRankingList(editText.text.toString())
                 adapter.submitList(filteredList)
                 // 検索後にキーボードを隠す
@@ -137,6 +136,7 @@ class RankingFragment : Fragment(), TextWatcher {
         findNavController().navigate(action)
     }
 
+    // EditTextのWatcher用の関数
     override fun afterTextChanged(p0: Editable?) {
 
     }
@@ -146,8 +146,7 @@ class RankingFragment : Fragment(), TextWatcher {
     }
 
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        Log.d("test", "onTextChanged")
-        // EditTextのワードを含むItemを返す
+        // EditTextのワードを含むItemでListを再生成
         viewModel.filteringRankingList(p0.toString())
     }
 }
