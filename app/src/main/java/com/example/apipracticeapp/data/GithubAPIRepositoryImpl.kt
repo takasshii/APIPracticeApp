@@ -1,8 +1,12 @@
 package com.example.apipracticeapp.data
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.apipracticeapp.db.RepoDAO
+import com.example.apipracticeapp.db.RepoDatabase
+import com.example.apipracticeapp.db.RemoteKeysDao
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,15 +17,26 @@ import javax.inject.Singleton
 
 @Singleton
 class GithubAPIRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val service: ApiService,
+    private val repoDatabase: RepoDatabase,
+    private val repoDAO: RepoDAO,
+    private val remoteKeysDAO: RemoteKeysDao
 ) : GithubAPIRepository {
     override fun getRepository(): Flow<PagingData<Item>> {
+
+        @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { GithubPagingSource(apiService) }
+            remoteMediator = GithubRemoteMediator(
+                service,
+                repoDatabase,
+                repoDAO,
+                remoteKeysDAO
+            ),
+            pagingSourceFactory = { repoDAO.getAll() }
         ).flow
     }
 
