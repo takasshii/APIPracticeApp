@@ -12,6 +12,8 @@ data class JsonGithub(
 
 @JsonClass(generateAdapter = true)
 data class Content(
+    @Json(name = "id")
+    val id: Int,
     val name: String,
     @Json(name = "owner")
     val owner: Owner,
