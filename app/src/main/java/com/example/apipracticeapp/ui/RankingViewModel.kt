@@ -1,13 +1,11 @@
 package com.example.apipracticeapp.ui
 
-import android.os.Build.VERSION_CODES.S
 import androidx.lifecycle.*
-import androidx.lifecycle.Transformations.distinctUntilChanged
 import androidx.paging.*
 import com.example.apipracticeapp.data.*
+import com.example.apipracticeapp.data.GithubAPIRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
