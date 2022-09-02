@@ -95,14 +95,14 @@ class RankingFragment : Fragment() {
                 binding.recyclerView.isVisible = !isListEmpty
                 binding.emptyText.isVisible = isListEmpty
                 // 初回のローディングの表示
-                binding.view.alpha = if (loadState.source.refresh is LoadState.Loading) {
-                    0.5F
-                } else {
+                binding.view.alpha = if (loadState.source.refresh is LoadState.NotLoading || loadState.mediator?.refresh is LoadState.NotLoading) {
                     0F
+                } else {
+                    0.5F
                 }
-                binding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                binding.progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
                 // 初回のエラーの表示
-                binding.retryEmptyButton.isVisible = loadState.source.refresh is LoadState.Error
+                binding.retryEmptyButton.isVisible = loadState.mediator?.refresh is LoadState.Error && customAdapter.itemCount == 0
 
             }
         }
