@@ -29,11 +29,6 @@ class GithubRemoteMediator (
             }
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-                // If remoteKeys is null, that means the refresh result is not in the database yet.
-                // We can return Success with `endOfPaginationReached = false` because Paging
-                // will call this method again if RemoteKeys becomes non-null.
-                // If remoteKeys is NOT NULL but its prevKey is null, that means we've reached
-                // the end of pagination for prepend.
                 val prevKey = remoteKeys?.prevKey
                 if (prevKey == null) {
                     return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
@@ -42,11 +37,6 @@ class GithubRemoteMediator (
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-                // If remoteKeys is null, that means the refresh result is not in the database yet.
-                // We can return Success with `endOfPaginationReached = false` because Paging
-                // will call this method again if RemoteKeys becomes non-null.
-                // If remoteKeys is NOT NULL but its nextKey is null, that means we've reached
-                // the end of pagination for append.
                 val nextKey = remoteKeys?.nextKey
                 if (nextKey == null) {
                     return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
