@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apipracticeapp.R
 import com.example.apipracticeapp.data.Item
@@ -23,7 +23,7 @@ val diff_util = object : DiffUtil.ItemCallback<Item>() {
 
 class CustomAdapter(
     private val itemClickListener: OnItemClickListener
-) : ListAdapter<Item, CustomAdapter.ViewHolder>(diff_util) {
+) : PagingDataAdapter<Item, CustomAdapter.ViewHolder>(diff_util) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.repository_title_text)
@@ -46,13 +46,15 @@ class CustomAdapter(
 
         // タップ処理を定義
         holder.itemView.setOnClickListener {
-            itemClickListener.itemClick(item)
+            item?.let {
+                itemClickListener.itemClick(item)
+            }
         }
     }
 
-    private fun setRepositoryName(holder: ViewHolder, item: Item) {
-        holder.title.text = item.name
-        holder.stars.text = "${item.stargazersCount}stars"
-        holder.language.text = item.language
+    private fun setRepositoryName(holder: ViewHolder, item: Item?) {
+        holder.title.text = item?.name
+        holder.stars.text = "${item?.stargazersCount}stars"
+        holder.language.text = item?.language
     }
 }

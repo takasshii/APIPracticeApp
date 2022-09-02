@@ -38,6 +38,7 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
 
     dataBinding {
@@ -51,12 +52,16 @@ dependencies {
     implementation "com.google.android.material:material:1.6.1"
     implementation "androidx.preference:preference-ktx:1.2.0"
     implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.paging:paging-common-ktx:3.1.1'
+    implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
 
     // Room components
     def roomVersion = "2.4.2"
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    implementation "androidx.room:room-paging:2.4.2"
 
     //  Lifecycle components
     def lifecycleVersion = "2.5.0"

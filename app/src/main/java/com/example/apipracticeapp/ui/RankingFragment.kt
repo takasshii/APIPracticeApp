@@ -6,13 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.apipracticeapp.data.Item
 import com.example.apipracticeapp.databinding.FragmentRankingBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RankingFragment : Fragment() {
@@ -20,6 +25,12 @@ class RankingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: RankingViewModel by viewModels()
+
+    private val customAdapter = CustomAdapter(object : CustomAdapter.OnItemClickListener {
+        override fun itemClick(item: Item) {
+            viewModel.nextPage(item)
+        }
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,11 +48,10 @@ class RankingFragment : Fragment() {
         val dividerItemDecoration =
             DividerItemDecoration(requireContext(), layoutManager.orientation)
         // タップ処理を定義
-        val adapter = CustomAdapter(object : CustomAdapter.OnItemClickListener {
-            override fun itemClick(item: Item) {
-                viewModel.nextPage(item)
-            }
-        })
+        val adapter = customAdapter.withLoadStateHeaderAndFooter(
+            header = RepoLoadStateAdapter(customAdapter::retry),
+            footer = RepoLoadStateAdapter(customAdapter::retry)
+        )
         // recyclerViewにアダプターを結びつけ
         binding.recyclerView.also {
             it.layoutManager = layoutManager
@@ -49,33 +59,62 @@ class RankingFragment : Fragment() {
             it.adapter = adapter
         }
 
+        fun onRefresh() {
+            binding.recyclerView.scrollToPosition(0)
+            viewModel.getTime()
+            customAdapter.refresh()
+        }
+
+        fun retry() {
+            customAdapter.retry()
+        }
+
         // タップした時の処理（APIを呼び出す）
         binding.reloadButton.setOnClickListener {
-            viewModel.fetchAPI()
+            onRefresh()
+        }
+
+        binding.retryEmptyButton.setOnClickListener {
+            customAdapter.refresh()
+        }
+
+        // Flowを監視
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.repositories.collectLatest { pagingData ->
+                customAdapter.submitData(pagingData)
+            }
+        }
+
+        // Flowを監視
+        viewLifecycleOwner.lifecycleScope.launch {
+            customAdapter.loadStateFlow.collect { loadState ->
+                val isListEmpty =
+                    loadState.refresh is LoadState.NotLoading && customAdapter.itemCount == 0
+
+                // リストが空の時に
+                binding.recyclerView.isVisible = !isListEmpty
+                binding.emptyText.isVisible = isListEmpty
+                // 初回のローディングの表示
+                binding.view.alpha = if (loadState.source.refresh is LoadState.NotLoading || loadState.mediator?.refresh is LoadState.NotLoading) {
+                    0F
+                } else {
+                    0.5F
+                }
+                binding.progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
+                // 初回のエラーの表示
+                binding.retryEmptyButton.isVisible = loadState.mediator?.refresh is LoadState.Error && customAdapter.itemCount == 0
+
+            }
         }
 
         // LiveDataを監視
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            if(uiState.repositories != null) {
-                // リストに値をセット
-                adapter.submitList(uiState.repositories)
-            }
-            if(uiState.time != null) {
+            if (uiState.time != null) {
                 // 時間をセット
                 binding.timeText.text = uiState.time
             }
             if (uiState.events.firstOrNull() != null) {
                 when (val event = uiState.events.firstOrNull()) {
-                    is Event.Success -> {
-                        // イベントを消費
-                        viewModel.consumeEvent(event)
-                    }
-                    is Event.Error -> {
-                        // ここでダイアログの表示を行う
-                        showNoticeDialog()
-                        // イベントを消費
-                        viewModel.consumeEvent(event)
-                    }
                     is Event.NextPage -> {
                         navigationResultFragment(event.item)
                         // イベントを消費
@@ -95,15 +134,6 @@ class RankingFragment : Fragment() {
         super.onDestroyView()
         //bindingの解放
         _binding = null
-    }
-
-    private fun showNoticeDialog() {
-        val dialog = ErrorDialogFragment(object : ErrorDialogFragment.NoticeDialogListener {
-            override fun positiveClick() {
-                viewModel.fetchAPI()
-            }
-        })
-        dialog.show(childFragmentManager, "APIError")
     }
 
     private fun navigationResultFragment(item: Item) {

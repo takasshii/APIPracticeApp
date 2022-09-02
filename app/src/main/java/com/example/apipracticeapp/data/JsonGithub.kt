@@ -1,6 +1,8 @@
 package com.example.apipracticeapp.data
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
@@ -12,6 +14,8 @@ data class JsonGithub(
 
 @JsonClass(generateAdapter = true)
 data class Content(
+    @Json(name = "id")
+    val id: Int,
     val name: String,
     @Json(name = "owner")
     val owner: Owner,
@@ -34,8 +38,10 @@ data class Owner(
 )
 
 // SafeArgs用
+@Entity(tableName = "repos")
 @Parcelize
 data class Item(
+    @PrimaryKey val id: Int,
     val name: String,
     val ownerIconUrl: String,
     val language: String?,

@@ -67,13 +67,32 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
+            <Button
+                android:id="@+id/retry_empty_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="再試行"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/recycler_view" />
+
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="時間置いてからやり直してください。"
+                app:layout_constraintBottom_toTopOf="@+id/retry_empty_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="@{viewModel.uiState.proceeding ? 0.5F : 0F}"
             android:background="#000000" />
 
         <ProgressBar
@@ -81,7 +100,6 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="@{viewModel.uiState.proceeding ? View.VISIBLE : View.INVISIBLE}" />
+            android:layout_gravity="center" />
 </FrameLayout>
 </layout>
